@@ -197,7 +197,6 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
     net = load_network(cfgfile, weightfile, 0);
     set_batch_network(net, 1);
     pthread_t detect_thread;
-    pthread_t fetch_thread;
 
     srand(2222222);
 
@@ -243,7 +242,7 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
 
     while(!demo_done){
         buff_index = (buff_index + 1) %3;
-        if(pthread_create(&fetch_thread, 0, fetch_in_thread, 0)) error("Thread creation failed");
+        fetch_in_thread(0); // Run synchronously to avoid macOS AVFoundation crash
         if(pthread_create(&detect_thread, 0, detect_in_thread, 0)) error("Thread creation failed");
         if(!prefix){
             fps = 1./(what_time_is_it_now() - demo_time);
@@ -254,7 +253,6 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
             sprintf(name, "%s_%08d", prefix, count);
             save_image(buff[(buff_index + 1)%3], name);
         }
-        pthread_join(fetch_thread, 0);
         pthread_join(detect_thread, 0);
         ++count;
     }
