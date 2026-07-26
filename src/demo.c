@@ -126,8 +126,13 @@ void *detect_in_thread(void *ptr)
 
     printf("\033[2J");
     printf("\033[1;1H");
-    printf("\nFPS:%.1f\n",fps);
-    printf("Objects:\n\n");
+    printf("\n=========================================================\n");
+    printf("            YOLOv3 Real-Time Object Detection            \n");
+    printf("=========================================================\n");
+    printf(" ◷ FPS : %5.1f\n", fps);
+    printf("---------------------------------------------------------\n");
+    printf(" ❖ DETECTED OBJECTS:\n");
+    printf("---------------------------------------------------------\n");
     image display = buff[(buff_index+2) % 3];
     draw_detections(display, dets, nboxes, demo_thresh, demo_names, demo_alphabet, demo_classes);
     free_detections(dets, nboxes);
