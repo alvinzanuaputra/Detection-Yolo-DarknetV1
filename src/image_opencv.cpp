@@ -100,6 +100,10 @@ image load_image_cv(char *filename, int channels)
 
 int show_image_cv(image im, const char* name, int ms)
 {
+    if (im.w <= 0 || im.h <= 0 || im.c <= 0 || im.data == 0) {
+        // Prevent OpenCV crash if an empty/invalid frame slips through
+        return -1;
+    }
     Mat m = image_to_mat(im);
     imshow(name, m);
     int c = waitKey(ms);
