@@ -1,5 +1,5 @@
-GPU=1
-CUDNN=1
+GPU=0
+CUDNN=0
 OPENCV=1
 OPENMP=1
 DEBUG=0
@@ -26,7 +26,8 @@ COMMON= -Iinclude/ -Isrc/
 CFLAGS=-Wall -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC
 
 ifeq ($(OPENMP), 1) 
-CFLAGS+= -fopenmp
+CFLAGS+= -Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include
+LDFLAGS+= -L/opt/homebrew/opt/libomp/lib -lomp
 endif
 
 ifeq ($(DEBUG), 1) 
@@ -38,8 +39,8 @@ CFLAGS+=$(OPTS)
 ifeq ($(OPENCV), 1) 
 COMMON+= -DOPENCV
 CFLAGS+= -DOPENCV
-LDFLAGS+= `pkg-config --libs opencv4` -lstdc++
-COMMON+= `pkg-config --cflags opencv4` 
+LDFLAGS+= `PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig /opt/homebrew/bin/pkg-config --libs opencv5` -lstdc++
+COMMON+= `PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig /opt/homebrew/bin/pkg-config --cflags opencv5` 
 endif
 
 ifeq ($(GPU), 1) 
