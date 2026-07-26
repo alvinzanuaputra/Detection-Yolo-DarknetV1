@@ -218,7 +218,16 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
 
     if(!cap) error("Couldn't connect to webcam.\n");
 
-    buff[0] = get_image_from_stream(cap);
+    int retry_count = 0;
+    do {
+        buff[0] = get_image_from_stream(cap);
+        if(buff[0].data == 0) {
+            retry_count++;
+            #include <unistd.h>
+            usleep(30000);
+            if(retry_count > 100) error("Camera failed to warm up or stream is empty.");
+        }
+    } while(buff[0].data == 0);
     buff[1] = copy_image(buff[0]);
     buff[2] = copy_image(buff[0]);
     buff_letter[0] = letterbox_image(buff[0], net->w, net->h);
